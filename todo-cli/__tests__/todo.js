@@ -12,7 +12,7 @@ describe("todoList Test Suite", () => {
         add({
             title: "test todo",
             completed: false,
-            dueDate: new Date().toISOString().split("T")[0] // Use today's date
+            dueDate: new Date().toISOString().split("T")[0] // Use today's date   
         });
         expect(all.length).toBe(1);
         expect(all[0].title).toBe("test todo");
@@ -87,4 +87,22 @@ describe("todoList Test Suite", () => {
         expect(dueLater()[0].title).toBe("due tomorrow todo");
         expect(dueLater()[1].title).toBe("due next week todo");
     });
+});
+const db = require("../models");
+
+describe("Todolist Test Suite", () => {
+  beforeAll(async () => {
+    await db.sequelize.sync({ force: true });
+  });
+
+  test("Should add new todo", async () => {
+    const todoItemsCount = await db.Todo.count();
+    await db.Todo.addTask({
+      title: "Test todo",
+      completed: false,
+      dueDate: new Date(),
+    });
+    const newTodoItemsCount = await db.Todo.count();
+    expect(newTodoItemsCount).toBe(todoItemsCount + 1);
+  });
 });
